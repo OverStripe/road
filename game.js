@@ -5,6 +5,17 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
+// Add a background color
+renderer.setClearColor(0x87CEEB); // Light blue sky color
+
+// Add ambient and directional lights
+const ambientLight = new THREE.AmbientLight(0x404040, 1); // Soft light
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Sunlight
+directionalLight.position.set(0, 10, 10).normalize();
+scene.add(directionalLight);
+
 // Car parameters
 const car = {
     speed: 0.2,
@@ -13,7 +24,7 @@ const car = {
     acceleration: 0.02,
     brakePower: 0.1,
     turnAngle: 0.05,
-    position: { x: 0, y: 0.5, z: 0 },
+    position: { x: 0, y: 1, z: 0 },
     mesh: null,
     update: function () {
         this.position.z -= this.speed;
@@ -25,11 +36,11 @@ const car = {
 // Create a car model
 function createCar() {
     const carBodyGeometry = new THREE.BoxGeometry(1, 0.5, 2);
-    const carBodyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const carBodyMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // Red car body
     const carBody = new THREE.Mesh(carBodyGeometry, carBodyMaterial);
 
     const wheelGeometry = new THREE.CylinderGeometry(0.2, 0.2, 0.5, 12);
-    const wheelMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 }); // Black wheels
 
     const wheels = [];
     for (let i = 0; i < 4; i++) {
@@ -61,7 +72,7 @@ const roadWidth = 10;
 // Create a road segment
 function createRoadSegment(positionZ) {
     const geometry = new THREE.PlaneGeometry(roadWidth, segmentLength);
-    const material = new THREE.MeshBasicMaterial({ color: 0x444444, side: THREE.DoubleSide });
+    const material = new THREE.MeshStandardMaterial({ color: 0x444444 }); // Dark gray road
     const roadSegment = new THREE.Mesh(geometry, material);
     roadSegment.rotation.x = -Math.PI / 2;
     roadSegment.position.set(0, 0, positionZ);
@@ -94,12 +105,12 @@ const mountains = [];
 // Create a tree
 function createTree(positionX, positionZ) {
     const trunkGeometry = new THREE.CylinderGeometry(0.2, 0.2, 2, 8);
-    const trunkMaterial = new THREE.MeshBasicMaterial({ color: 0x8B4513 });
+    const trunkMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // Brown trunk
     const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
     trunk.position.set(positionX, 1, positionZ);
 
     const foliageGeometry = new THREE.ConeGeometry(1, 3, 8);
-    const foliageMaterial = new THREE.MeshBasicMaterial({ color: 0x228B22 });
+    const foliageMaterial = new THREE.MeshStandardMaterial({ color: 0x228B22 }); // Green foliage
     const foliage = new THREE.Mesh(foliageGeometry, foliageMaterial);
     foliage.position.set(positionX, 3, positionZ);
 
@@ -112,7 +123,7 @@ function createTree(positionX, positionZ) {
 // Create a mountain
 function createMountain(positionX, positionZ) {
     const mountainGeometry = new THREE.ConeGeometry(10, 20, 4);
-    const mountainMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
+    const mountainMaterial = new THREE.MeshStandardMaterial({ color: 0x808080 }); // Gray mountains
     const mountain = new THREE.Mesh(mountainGeometry, mountainMaterial);
     mountain.position.set(positionX, 10, positionZ);
     mountain.rotation.y = Math.random() * Math.PI;
@@ -123,7 +134,7 @@ function createMountain(positionX, positionZ) {
 function generateScenery(segment) {
     const offsetZ = segment.position.z;
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
         const leftTree = createTree(-roadWidth / 2 - 5 - Math.random() * 5, offsetZ + Math.random() * segmentLength);
         const rightTree = createTree(roadWidth / 2 + 5 + Math.random() * 5, offsetZ + Math.random() * segmentLength);
         trees.push(leftTree, rightTree);
@@ -131,49 +142,4 @@ function generateScenery(segment) {
     }
 
     const leftMountain = createMountain(-roadWidth - 30 - Math.random() * 50, offsetZ + Math.random() * segmentLength);
-    const rightMountain = createMountain(roadWidth + 30 + Math.random() * 50, offsetZ + Math.random() * segmentLength);
-    mountains.push(leftMountain, rightMountain);
-    scene.add(leftMountain, rightMountain);
-}
-
-// Initialize scenery
-function initializeScenery() {
-    roadSegments.forEach(segment => generateScenery(segment));
-}
-
-// Handle button inputs
-document.getElementById('leftButton').addEventListener('mousedown', () => (car.turnDirection = -1));
-document.getElementById('rightButton').addEventListener('mousedown', () => (car.turnDirection = 1));
-document.getElementById('forwardButton').addEventListener('mousedown', () => (car.speed += car.acceleration));
-document.getElementById('brakeButton').addEventListener('mousedown', () => (car.speed -= car.brakePower));
-['leftButton', 'rightButton'].forEach(buttonId =>
-    document.getElementById(buttonId).addEventListener('mouseup', () => (car.turnDirection = 0))
-);
-
-// Update game logic
-function updateGameLogic() {
-    car.update();
-    car.mesh.position.set(car.position.x, car.position.y, car.position.z);
-    updateRoad();
-}
-
-// Render loop
-function animate() {
-    requestAnimationFrame(animate);
-    updateGameLogic();
-    renderer.render(scene, camera);
-}
-
-// Initialize game
-function initializeGame() {
-    camera.position.set(0, 5, 10);
-    camera.lookAt(0, 0, -10);
-
-    createCar();
-    initializeRoad();
-    initializeScenery();
-    animate();
-}
-
-initializeGame();
-
+    const rightMountain = create
