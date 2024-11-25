@@ -1,60 +1,52 @@
-/* General Styles */
+/* General Styling */
 body, html {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
+    background: #87CEEB; /* Sky blue for loading screen */
     overflow: hidden;
 }
 
-header, footer {
-    text-align: center;
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-}
-
-header h1 {
-    margin: 0;
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 24px;
+    color: #444;
 }
 
-footer p {
-    margin: 0;
-    font-size: 14px;
-}
-
-main {
-    position: relative;
-}
-
+/* Full-screen canvas for the game */
 canvas {
     display: block;
     width: 100vw;
-    height: 90vh;
-    background-color: #87CEEB; /* Light blue background for the game canvas */
+    height: 100vh;
 }
 
-/* Controls Styling */
+/* Touch Controls */
 #controls {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
-    width: 100%;
-    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
 button {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     font-size: 24px;
-    margin: 0 10px;
     border: none;
     border-radius: 10px;
-    background-color: #333;
+    background: #444;
     color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
     cursor: pointer;
+    outline: none;
 }
 
 button:active {
-    background-color: #555;
+    background: #666;
 }
