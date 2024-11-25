@@ -142,4 +142,48 @@ function generateScenery(segment) {
     }
 
     const leftMountain = createMountain(-roadWidth - 30 - Math.random() * 50, offsetZ + Math.random() * segmentLength);
-    const rightMountain = create
+    const rightMountain = createMountain(roadWidth + 30 + Math.random() * 50, offsetZ + Math.random() * segmentLength);
+    mountains.push(leftMountain, rightMountain);
+    scene.add(leftMountain, rightMountain);
+}
+
+// Initialize scenery
+function initializeScenery() {
+    roadSegments.forEach(segment => generateScenery(segment));
+}
+
+// Update game logic
+function updateGameLogic() {
+    car.update();
+    car.mesh.position.set(car.position.x, car.position.y, car.position.z);
+    updateRoad();
+}
+
+// Handle button inputs
+document.getElementById('leftButton').addEventListener('mousedown', () => (car.turnDirection = -1));
+document.getElementById('rightButton').addEventListener('mousedown', () => (car.turnDirection = 1));
+document.getElementById('forwardButton').addEventListener('mousedown', () => (car.speed += car.acceleration));
+document.getElementById('brakeButton').addEventListener('mousedown', () => (car.speed -= car.brakePower));
+['leftButton', 'rightButton'].forEach(buttonId =>
+    document.getElementById(buttonId).addEventListener('mouseup', () => (car.turnDirection = 0))
+);
+
+// Render loop
+function animate() {
+    requestAnimationFrame(animate);
+    updateGameLogic();
+    renderer.render(scene, camera);
+}
+
+// Initialize game
+function initializeGame() {
+    camera.position.set(0, 5, 15); // Adjust camera to view the car and road
+    camera.lookAt(0, 0, 0);
+
+    createCar();
+    initializeRoad();
+    initializeScenery();
+    animate();
+}
+
+initializeGame();
