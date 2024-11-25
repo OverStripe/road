@@ -3,7 +3,6 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background: #87CEEB; /* Sky blue for loading screen */
     overflow: hidden;
 }
 
