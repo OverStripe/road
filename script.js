@@ -16,23 +16,24 @@ directionalLight.position.set(5, 10, 7);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
 
-// Add a background skybox
+// Add a background skybox (Online Resource)
 const loader = new THREE.CubeTextureLoader();
 const skyTexture = loader.load([
-    'skybox/px.jpg', // Right
-    'skybox/nx.jpg', // Left
-    'skybox/py.jpg', // Top
-    'skybox/ny.jpg', // Bottom
-    'skybox/pz.jpg', // Front
-    'skybox/nz.jpg', // Back
+    'https://threejsfundamentals.org/threejs/resources/images/compressed-skybox/px.jpg', // Right
+    'https://threejsfundamentals.org/threejs/resources/images/compressed-skybox/nx.jpg', // Left
+    'https://threejsfundamentals.org/threejs/resources/images/compressed-skybox/py.jpg', // Top
+    'https://threejsfundamentals.org/threejs/resources/images/compressed-skybox/ny.jpg', // Bottom
+    'https://threejsfundamentals.org/threejs/resources/images/compressed-skybox/pz.jpg', // Front
+    'https://threejsfundamentals.org/threejs/resources/images/compressed-skybox/nz.jpg', // Back
 ]);
 scene.background = skyTexture;
 
-// Car parameters
+// Add car
 const car = {
-    position: { x: 0, y: 0.5, z: 0 },
-    speed: 0.4,
-    turnSpeed: 0.1,
+    position: { x: 0, y: 1, z: 0 },
+    speed: 0,
+    turnSpeed: 0.2, // Turning speed
+    turnDirection: 0, // -1 for left, 1 for right, 0 for straight
     mesh: null,
 };
 
@@ -70,7 +71,7 @@ function createCar() {
 // Initialize the car
 createCar();
 
-// Road parameters
+// Add road
 const roadSegments = [];
 const segmentLength = 50;
 const roadWidth = 20;
@@ -92,7 +93,7 @@ for (let i = 0; i < 10; i++) {
     roadSegments.push(segment);
 }
 
-// Scenery (trees and mountains)
+// Add scenery
 const scenery = [];
 
 function createTree(x, z) {
@@ -118,26 +119,31 @@ function createTree(x, z) {
 }
 
 function createScenery() {
-    for (let i = -50; i < 0; i += 10) {
-        createTree(-roadWidth - Math.random() * 10, i * segmentLength);
-        createTree(roadWidth + Math.random() * 10, i * segmentLength);
+    for (let i = -100; i < 0; i += 20) {
+        createTree(-roadWidth - Math.random() * 10, i);
+        createTree(roadWidth + Math.random() * 10, i);
     }
 }
 
 createScenery();
 
-// Game logic
-let turnDirection = 0;
+// Handle controls
+document.getElementById('leftButton').addEventListener('touchstart', () => (car.turnDirection = -1));
+document.getElementById('rightButton').addEventListener('touchstart', () => (car.turnDirection = 1));
+document.getElementById('forwardButton').addEventListener('touchstart', () => (car.speed = 0.5));
+document.getElementById('forwardButton').addEventListener('touchend', () => (car.speed = 0));
+document.getElementById('leftButton').addEventListener('touchend', () => (car.turnDirection = 0));
+document.getElementById('rightButton').addEventListener('touchend', () => (car.turnDirection = 0));
 
-document.getElementById('leftButton').addEventListener('touchstart', () => (turnDirection = -1));
-document.getElementById('rightButton').addEventListener('touchstart', () => (turnDirection = 1));
-document.getElementById('leftButton').addEventListener('touchend', () => (turnDirection = 0));
-document.getElementById('rightButton').addEventListener('touchend', () => (turnDirection = 0));
-
+// Animation loop
 function animate() {
     requestAnimationFrame(animate);
 
-    // Move the road
+    // Update car position
+    car.mesh.position.x += car.turnDirection * car.turnSpeed;
+    car.mesh.position.z -= car.speed;
+
+    // Move road
     roadSegments.forEach(segment => {
         segment.position.z += car.speed;
         if (segment.position.z > camera.position.z) {
@@ -145,7 +151,7 @@ function animate() {
         }
     });
 
-    // Move the scenery
+    // Move scenery
     scenery.forEach(item => {
         item.position.z += car.speed;
         if (item.position.z > camera.position.z) {
@@ -153,11 +159,8 @@ function animate() {
         }
     });
 
-    // Simulate car movement
-    car.mesh.position.x += turnDirection * car.turnSpeed;
-
     // Update camera
-    camera.position.set(car.mesh.position.x, car.mesh.position.y + 5, car.mesh.position.z + 10);
+    camera.position.set(car.mesh.position.x, car.mesh.position.y + 5, car.mesh.position.z + 15);
     camera.lookAt(car.mesh.position);
 
     renderer.render(scene, camera);
