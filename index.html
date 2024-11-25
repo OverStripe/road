@@ -2,27 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Endless Road Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Endless Road Mobile</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Endless Road Game</h1>
-        <p>Control the car using the buttons below. Enjoy the drive!</p>
-    </header>
-    <main>
-        <canvas id="gameCanvas"></canvas>
-        <div id="controls">
-            <button id="leftButton">⬅️</button>
-            <button id="rightButton">➡️</button>
-            <button id="forwardButton">⬆️</button>
-            <button id="brakeButton">⬇️</button>
-        </div>
-    </main>
-    <footer>
-        <p>Created for an immersive driving experience. Drive safely!</p>
-    </footer>
+    <div id="loading">Loading...</div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="controls">
+        <button id="leftButton">⬅️</button>
+        <button id="rightButton">➡️</button>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r132/three.min.js"></script>
     <script src="script.js"></script>
 </body>
